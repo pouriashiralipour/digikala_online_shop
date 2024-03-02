@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import environs
+
+
+# env config
+env = environs.Env()
+environs.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q%&32#w!1dvc5ss7d8us7idnzr=+y9e#$4f#hbp)h+$q+d8rbj'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DJANGO_DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -81,8 +87,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "digikala_online_shop",
         "HOST": "localhost",
-        "USER": "root",
-        "PASSWORD": "dKah40<6=c`+",
+        "USER": env("MYSQL_USER"),
+        "PASSWORD": env("MYSQL_DB_PASSWORD"),
     }
 }
 
