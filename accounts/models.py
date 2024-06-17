@@ -3,4 +3,5 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    pass
+    username = None
+    phone_number = models.CharField(max_length=11, unique=True)
