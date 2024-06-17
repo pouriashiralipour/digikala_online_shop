@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from .forms import CustomUserCreationForm
 from .models import CustomUser
+from .otp_sender import get_random_otp, send_otp
 
 
 def register_view(request):
@@ -15,7 +16,10 @@ def register_view(request):
                 phone_number = request.POST.get("phone_number")
                 user = CustomUser.objects.get(phone_number=phone_number)
                 # send otp
+                otp = get_random_otp()
+                send_otp(phone_number, otp)
                 # save otp
+                user.otp = otp
                 user.save()
                 # redirect to vrify page
         except CustomUser.DoesNotExist:
@@ -23,7 +27,10 @@ def register_view(request):
             if form.is_valid():
                 user = form.save(commit=False)
                 # send otp
+                otp = get_random_otp()
+                send_otp(phone_number, otp)
                 # save otp
+                user.otp = otp
                 user.is_active = False
                 user.save()
                 # redirect to vrify page
