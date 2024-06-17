@@ -143,3 +143,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # AUTH MODEL
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+# kavehnegar api
+KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")

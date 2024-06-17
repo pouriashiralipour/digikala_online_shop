@@ -1,9 +1,10 @@
+from django.conf import settings
 from kavenegar import *
 
 
 def send_otp(phone_number, otp):
     try:
-        api = KavenegarAPI("Your APIKey", timeout=20)
+        api = KavenegarAPI(settings.KAVEHNEGAR_API, timeout=20)
         params = {
             "sender": "",  # optional
             "receptor": "",  # multiple mobile number, split by comma
