@@ -7,3 +7,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=11, unique=True)
     otp = models.PositiveIntegerField(blank=True, null=True)
     otp_datetime_created = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = "phone_number"
+
+    REQUIRED_FIELDS = []
