@@ -22,6 +22,7 @@ def register_view(request):
                 user.otp = otp
                 user.save()
                 # redirect to vrify page
+                return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
             form = CustomUserCreationForm(request.POST)
             if form.is_valid():
