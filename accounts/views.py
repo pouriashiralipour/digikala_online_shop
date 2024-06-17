@@ -34,6 +34,7 @@ def register_view(request):
                 user.is_active = False
                 user.save()
                 # redirect to vrify page
+                return HttpResponseRedirect(reverse("verify_view"))
     return render(request, "login_signup.html", {"form": form})
 
 
@@ -49,3 +50,10 @@ def register_view(request):
 
 def dashboard_view(request):
     return render(request, "dashboard.html")
+
+
+def verify_view(request):
+    return render(
+        request,
+        "verify.html",
+    )
