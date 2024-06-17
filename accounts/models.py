@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     otp_datetime_created = models.DateTimeField(auto_now=True)
 
     objects = CustomUserManager()
-
+    backend = "accounts.custom_backend.CustomBackendPhoneNumber"
     USERNAME_FIELD = "phone_number"
 
     REQUIRED_FIELDS = []
