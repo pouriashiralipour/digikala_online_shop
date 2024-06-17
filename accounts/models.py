@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     otp = models.PositiveIntegerField(blank=True, null=True)
     otp_datetime_created = models.DateTimeField(auto_now=True)
 
-    objects = CustomUserManager
+    objects = CustomUserManager()
 
     USERNAME_FIELD = "phone_number"
 
