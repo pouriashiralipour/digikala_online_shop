@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -65,8 +66,10 @@ def verify_view(request):
         if request.method == "POST":
             # check otp time
             if not check_otp_time(user.phone_number):
+                messages.error(request, "OTP is expired, please try again.")
                 return HttpResponseRedirect(reverse("register_view"))
             if user.otp != int(request.POST.get("otp")):
+                messages.error(request, "OTP is incorrect.")
                 return HttpResponseRedirect(reverse("register_view"))
             user.is_active = True
             user.save()
@@ -74,6 +77,7 @@ def verify_view(request):
             return HttpResponseRedirect(reverse("dashboard"))
         return render(request, "verify.html", {"phone_number": phone_number})
     except CustomUser.DoesNotExist:
+        messages.error(request, "Error accorded, try again.")
         return HttpResponseRedirect(reverse("register_view"))
 
 
