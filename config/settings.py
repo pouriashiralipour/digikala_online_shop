@@ -35,6 +35,10 @@ DEBUG = os.getenv("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "accounts.custom_backend.CustomBackendPhoneNumber",
+]
 
 # Application definition
 
@@ -112,10 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "accounts.custom_backend.CustomBackendPhoneNumber",
-]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -146,3 +146,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 # kavehnegar api
 KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")
+
+# redirect
+# LOGIN_REDIRECT_URL = "verify"
+# LOGOUT_REDIRECT_URL = "verify"

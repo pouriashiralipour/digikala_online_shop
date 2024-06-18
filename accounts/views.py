@@ -20,26 +20,27 @@ def register_view(request):
                 # send_otp_soap(phone_number, otp)
                 # send_otp(phone_number, otp)
                 # save otp
+                print(otp)
                 user.otp = otp
                 user.save()
                 request.session["user_number"] = user.phone_number
                 # redirect to vrify page
-                return HttpResponseRedirect(reverse("verify_view"))
+                return HttpResponseRedirect(reverse("verify"))
         except CustomUser.DoesNotExist:
             form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
                 # send otp
                 otp = get_random_otp()
-                # send_otp(phone_number, otp)
+                # helper.send_otp(mobile, otp)
                 # send_otp_soap(phone_number, otp)
                 # save otp
+                print(otp)
                 user.otp = otp
                 user.is_active = False
                 user.save()
-                request.session["user_number"] = user.phone_number
-                # redirect to vrify page
-                return HttpResponseRedirect(reverse("verify_view"))
+                request.session["user_mobile"] = user.phone_number
+                return HttpResponseRedirect(reverse("verify"))
     return render(request, "register.html", {"form": form})
 
 

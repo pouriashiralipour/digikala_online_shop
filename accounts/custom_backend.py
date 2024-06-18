@@ -1,8 +1,4 @@
-from typing import Any
-
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.http import HttpRequest
 
 from .models import CustomUser
 
