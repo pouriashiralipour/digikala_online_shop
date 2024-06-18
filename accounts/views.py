@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from .forms import RegisterForm
 from .models import CustomUser
-from .otp_sender import get_random_otp, send_otp, send_otp_soap
+from .otp_sender import check_otp_time, get_random_otp, send_otp, send_otp_soap
 
 
 def register_view(request):
@@ -63,6 +63,9 @@ def verify_view(request):
         phone_number = request.session.get("user_mobile")
         user = CustomUser.objects.get(phone_number=phone_number)
         if request.method == "POST":
+            # check otp time
+            if not check_otp_time(user.phone_number):
+                return HttpResponseRedirect(reverse("register_view"))
             if user.otp != int(request.POST.get("otp")):
                 return HttpResponseRedirect(reverse("register_view"))
             user.is_active = True
@@ -70,5 +73,5 @@ def verify_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("dashboard"))
         return render(request, "verify.html", {"phone_number": phone_number})
-    except:
+    except CustomUser.DoesNotExist:
         return HttpResponseRedirect(reverse("register_view"))

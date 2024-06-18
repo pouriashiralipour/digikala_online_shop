@@ -1,8 +1,11 @@
+import datetime
 from random import randint
 
 from django.conf import settings
 from kavenegar import *
 from zeep import Client
+
+from .models import CustomUser
 
 
 def send_otp(phone_number, otp):
@@ -55,3 +58,17 @@ def send_otp_soap(phone_number, otp):
 
 def get_random_otp():
     return randint(1000, 9999)
+
+
+def check_otp_time(phone_number):
+    try:
+        user = CustomUser.objects.get(phone_number=phone_number)
+        now = datetime.datetime.now()
+        otp_datetime_created = user.otp_datetime_created
+        diff_time = now - otp_datetime_created
+        print("OTP_TIME : ", diff_time)
+        if diff_time.seconds > 30:
+            return False
+        return True
+    except CustomUser.DoesNotExist:
+        return False
