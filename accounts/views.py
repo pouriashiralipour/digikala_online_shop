@@ -39,7 +39,7 @@ def register_view(request):
                 user.otp = otp
                 user.is_active = False
                 user.save()
-                request.session["user_mobile"] = user.phone_number
+                request.session["user_number"] = user.phone_number
                 return HttpResponseRedirect(reverse("verify"))
     return render(request, "register.html", {"form": form})
 
@@ -60,7 +60,7 @@ def dashboard_view(request):
 
 def verify_view(request):
     try:
-        phone_number = request.session.get("user_mobile")
+        phone_number = request.session.get("user_number")
         user = CustomUser.objects.get(phone_number=phone_number)
         if request.method == "POST":
             # check otp time
@@ -75,3 +75,8 @@ def verify_view(request):
         return render(request, "verify.html", {"phone_number": phone_number})
     except CustomUser.DoesNotExist:
         return HttpResponseRedirect(reverse("register_view"))
+
+
+# def verify_view(request):
+#     phone_number = request.session.get("user_mobile")
+#     return render(request, "verify.html", {"phone_number": phone_number})
