@@ -1,4 +1,5 @@
 import datetime
+import time
 from random import randint
 
 from django.conf import settings
@@ -29,6 +30,7 @@ def send_otp(phone_number, otp):
 
 
 def send_otp_soap(phone_number, otp):
+    time.sleep(10)
     client = Client("http://api.kavenegar.com/soap/v1.asmx?WSDL")
     receptor = [
         phone_number,
