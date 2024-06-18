@@ -59,5 +59,16 @@ def dashboard_view(request):
 
 
 def verify_view(request):
-    phone_number = request.session.get("user_number")
-    return render(request, "verify.html", {"phone_number": phone_number})
+    try:
+        phone_number = request.session.get("user_mobile")
+        user = CustomUser.objects.get(phone_number=phone_number)
+        if request.method == "POST":
+            if user.otp != int(request.POST.get("otp")):
+                return HttpResponseRedirect(reverse("register_view"))
+            user.is_active = True
+            user.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse("dashboard"))
+        return render(request, "verify.html", {"phone_number": phone_number})
+    except:
+        return HttpResponseRedirect(reverse("register_view"))
