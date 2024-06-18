@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from .forms import CustomUserCreationForm
 from .models import CustomUser
-from .otp_sender import get_random_otp, send_otp
+from .otp_sender import get_random_otp, send_otp, send_otp_soap
 
 
 def register_view(request):
@@ -17,11 +17,13 @@ def register_view(request):
                 user = CustomUser.objects.get(phone_number=phone_number)
                 # send otp
                 otp = get_random_otp()
-                send_otp(phone_number, otp)
+                send_otp_soap(phone_number, otp)
+                # send_otp(phone_number, otp)
+
                 # save otp
                 user.otp = otp
                 user.save()
-                request.session["user_phone_number"] = user.phone_number
+                request.session["user_number"] = user.phone_number
                 # redirect to vrify page
                 return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
@@ -30,12 +32,13 @@ def register_view(request):
                 user = form.save(commit=False)
                 # send otp
                 otp = get_random_otp()
-                send_otp(phone_number, otp)
+                # send_otp(phone_number, otp)
+                send_otp_soap(phone_number, otp)
                 # save otp
                 user.otp = otp
                 user.is_active = False
                 user.save()
-                request.session["user_phone_number"] = user.phone_number
+                request.session["user_number"] = user.phone_number
                 # redirect to vrify page
                 return HttpResponseRedirect(reverse("verify_view"))
     return render(request, "login_signup.html", {"form": form})
@@ -56,5 +59,5 @@ def dashboard_view(request):
 
 
 def verify_view(request):
-    phone_number = request.session.get["user_phone_number"]
+    phone_number = request.session.get("user_number")
     return render(request, "verify.html", {"phone_number": phone_number})
