@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # my apps
     "accounts",
+    # third party
+    "background_task",
 ]
 
 MIDDLEWARE = [
