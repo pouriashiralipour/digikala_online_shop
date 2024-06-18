@@ -3,13 +3,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import CustomUserCreationForm
+from .forms import RegisterForm
 from .models import CustomUser
 from .otp_sender import get_random_otp, send_otp, send_otp_soap
 
 
 def register_view(request):
-    form = CustomUserCreationForm
+    form = RegisterForm
     if request.method == "POST":
         try:
             if "phone_number" in request.POST:
@@ -17,9 +17,8 @@ def register_view(request):
                 user = CustomUser.objects.get(phone_number=phone_number)
                 # send otp
                 otp = get_random_otp()
-                send_otp_soap(phone_number, otp)
+                # send_otp_soap(phone_number, otp)
                 # send_otp(phone_number, otp)
-
                 # save otp
                 user.otp = otp
                 user.save()
@@ -27,13 +26,13 @@ def register_view(request):
                 # redirect to vrify page
                 return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
-            form = CustomUserCreationForm(request.POST)
+            form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
                 # send otp
                 otp = get_random_otp()
                 # send_otp(phone_number, otp)
-                send_otp_soap(phone_number, otp)
+                # send_otp_soap(phone_number, otp)
                 # save otp
                 user.otp = otp
                 user.is_active = False
@@ -41,7 +40,7 @@ def register_view(request):
                 request.session["user_number"] = user.phone_number
                 # redirect to vrify page
                 return HttpResponseRedirect(reverse("verify_view"))
-    return render(request, "login_signup.html", {"form": form})
+    return render(request, "register.html", {"form": form})
 
 
 # def mobile_login_view(request):
