@@ -42,7 +42,7 @@ def register_view(request):
                 user.save()
                 request.session["user_number"] = user.phone_number
                 return HttpResponseRedirect(reverse("verify"))
-    return render(request, "register.html", {"form": form})
+    return render(request, "registration/login-register.html", {"form": form})
 
 
 # def mobile_login_view(request):
