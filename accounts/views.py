@@ -56,7 +56,7 @@ def register_view(request):
 
 
 def dashboard_view(request):
-    return render(request, "dashboard.html")
+    return render(request, "registration/welocom.html")
 
 
 def verify_view(request):
@@ -75,7 +75,9 @@ def verify_view(request):
             user.save()
             login(request, user)
             return HttpResponseRedirect(reverse("dashboard"))
-        return render(request, "verify.html", {"phone_number": phone_number})
+        return render(
+            request, "registration/verification.html", {"phone_number": phone_number}
+        )
     except CustomUser.DoesNotExist:
         messages.error(request, "Error accorded, try again.")
         return HttpResponseRedirect(reverse("register_view"))
