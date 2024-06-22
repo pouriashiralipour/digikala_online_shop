@@ -26,7 +26,7 @@ def register_view(request):
                 user.save()
                 request.session["user_number"] = user.phone_number
                 # redirect to vrify page
-                return HttpResponseRedirect(reverse("verify"))
+                return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
             form = RegisterForm(request.POST)
             if form.is_valid():
@@ -41,7 +41,7 @@ def register_view(request):
                 user.is_active = False
                 user.save()
                 request.session["user_number"] = user.phone_number
-                return HttpResponseRedirect(reverse("verify"))
+                return HttpResponseRedirect(reverse("verify_view"))
     return render(request, "registration/login-register.html", {"form": form})
 
 
@@ -55,7 +55,7 @@ def register_view(request):
 #     return render(request, "login_signup.html")
 
 
-def dashboard_view(request):
+def welcome_view(request):
     return render(request, "registration/welcome.html")
 
 
@@ -74,7 +74,7 @@ def verify_view(request):
             user.is_active = True
             user.save()
             login(request, user)
-            return HttpResponseRedirect(reverse("dashboard"))
+            return HttpResponseRedirect(reverse("welcome_view"))
         return render(
             request, "registration/verification.html", {"phone_number": phone_number}
         )
