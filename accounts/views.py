@@ -56,7 +56,7 @@ def register_view(request):
 
 
 def dashboard_view(request):
-    return render(request, "registration/welocom.html")
+    return render(request, "registration/welcome.html")
 
 
 def verify_view(request):
