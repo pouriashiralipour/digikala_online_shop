@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -17,12 +17,14 @@ def register_view(request):
             user = CustomUser.objects.get(phone_number=phone_number)
             # کاربر موجود است، ارسال OTP برای ورود
             otp = get_random_otp()
-            # send_otp_soap(phone_number, otp)
-            # send_otp(phone_number, otp)
             user.otp = otp
             print(otp)
             user.save()
             request.session["user_number"] = user.phone_number
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse(
+                    {"success": True, "redirect_url": reverse("verify_view")}
+                )
             return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
             # کاربر جدید است، ثبت نام و ارسال OTP
@@ -30,15 +32,19 @@ def register_view(request):
             if form.is_valid():
                 user = form.save(commit=False)
                 otp = get_random_otp()
-                # send_otp_soap(phone_number, otp)
-                # send_otp(phone_number, otp)
                 user.otp = otp
                 print(otp)
                 user.is_active = False
                 user.save()
                 request.session["user_number"] = user.phone_number
                 request.session["is_new_user"] = True
+                if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                    return JsonResponse(
+                        {"success": True, "redirect_url": reverse("verify_view")}
+                    )
                 return HttpResponseRedirect(reverse("verify_view"))
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": False, "message": "Invalid form data"})
     return render(request, "registration/login-register.html", {"form": form})
 
 
@@ -51,24 +57,36 @@ def verify_view(request):
         phone_number = request.session.get("user_number")
         user = CustomUser.objects.get(phone_number=phone_number)
         if request.method == "POST":
-            # check otp time
+            # بررسی زمان انقضای OTP
             if not check_otp_time(user.phone_number):
-                messages.error(request, "OTP is expired, please try again.")
+                message = "OTP is expired, please try again."
+                if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                    return JsonResponse({"success": False, "message": message})
+                messages.error(request, message)
                 return HttpResponseRedirect(reverse("register_view"))
             if user.otp != int(request.POST.get("otp")):
-                messages.error(request, "OTP is incorrect.")
+                message = "OTP is incorrect."
+                if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                    return JsonResponse({"success": False, "message": message})
+                messages.error(request, message)
                 return HttpResponseRedirect(reverse("register_view"))
             user.is_active = True
             user.save()
             login(request, user)
             if request.session.get("is_new_user"):
                 del request.session["is_new_user"]
-                return HttpResponseRedirect(reverse("welcome_view"))
+                redirect_url = reverse("welcome_view")
             else:
-                return HttpResponseRedirect(reverse("home_page"))
+                redirect_url = reverse("home_page")
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": True, "redirect_url": redirect_url})
+            return HttpResponseRedirect(redirect_url)
         return render(
             request, "registration/verification.html", {"phone_number": phone_number}
         )
     except CustomUser.DoesNotExist:
-        messages.error(request, "Error occurred, try again.")
+        message = "Error occurred, try again."
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse({"success": False, "message": message})
+        messages.error(request, message)
         return HttpResponseRedirect(reverse("register_view"))
