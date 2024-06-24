@@ -30,16 +30,16 @@
                     <p class="fw-normal  mb-1">سلام!</p>
                     <p class="fw-normal ">لطفا شماره موبایل یا ایمیل خود را وارد کنید</p>
                     <!-- start of auth-form -->
-                    <form action="" class="auth-form" method='post'>
+                    <form id="register-form" action="{% url 'register_view' %}" class="auth-form" method='post'>
                         {% csrf_token %}
                         <!-- start of form-element -->
                         <div class="form-element-row mb-5">
-                            <input type="text" name="phone_number" class="form-control" placeholder="شماره موبایل یا ایمیل">
+                            <input type="text" name="phone_number" class="form-control" placeholder="شماره موبایل یا ایمیل" required>
                         </div>
                         <!-- end of form-element -->
                         <!-- start of form-element -->
                         <div class="form-element-row mb-3">
-                            <button class="btn btn-primary">ادامه</button>
+                            <button type="submit" class="btn btn-primary">ادامه</button>
                         </div>
                         <!-- end of form-element -->
                         <!-- start of form-element -->
@@ -60,7 +60,7 @@
         </main>
     </div>
 
-
+    <script src="{% static 'main.js' %}"></script>
     {% include "scripts.html" %}
 </body>
 
