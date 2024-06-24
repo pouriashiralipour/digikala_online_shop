@@ -67,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "accounts.middleware.LoginRedirectMiddleware",
 ]
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -155,8 +156,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 # redirect
-LOGOUT_REDIRECT_URL = "pages:home_page"
-LOGIN_REDIRECT_URL = "pages:home_page"
+LOGOUT_REDIRECT_URL = "home_page"
+LOGIN_REDIRECT_URL = "home_page"
 
 # kavehnegar api
 KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")
