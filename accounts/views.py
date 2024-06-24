@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .forms import RegisterForm
@@ -10,49 +10,36 @@ from .otp_sender import check_otp_time, get_random_otp, send_otp, send_otp_soap
 
 
 def register_view(request):
-    form = RegisterForm
+    form = RegisterForm()
     if request.method == "POST":
+        phone_number = request.POST.get("phone_number")
         try:
-            if "phone_number" in request.POST:
-                phone_number = request.POST.get("phone_number")
-                user = CustomUser.objects.get(phone_number=phone_number)
-                # send otp
-                otp = get_random_otp()
-                # send_otp_soap(phone_number, otp)
-                # send_otp(phone_number, otp)
-                # save otp
-                print(otp)
-                user.otp = otp
-                user.save()
-                request.session["user_number"] = user.phone_number
-                # redirect to vrify page
-                return HttpResponseRedirect(reverse("verify_view"))
+            user = CustomUser.objects.get(phone_number=phone_number)
+            # کاربر موجود است، ارسال OTP برای ورود
+            otp = get_random_otp()
+            # send_otp_soap(phone_number, otp)
+            # send_otp(phone_number, otp)
+            user.otp = otp
+            print(otp)
+            user.save()
+            request.session["user_number"] = user.phone_number
+            return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
+            # کاربر جدید است، ثبت نام و ارسال OTP
             form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
-                # send otp
                 otp = get_random_otp()
-                # helper.send_otp(mobile, otp)
                 # send_otp_soap(phone_number, otp)
-                # save otp
-                print(otp)
+                # send_otp(phone_number, otp)
                 user.otp = otp
+                print(otp)
                 user.is_active = False
                 user.save()
                 request.session["user_number"] = user.phone_number
+                request.session["is_new_user"] = True
                 return HttpResponseRedirect(reverse("verify_view"))
     return render(request, "registration/login-register.html", {"form": form})
-
-
-# def mobile_login_view(request):
-#     if request.method == "POST":
-#         if "phone_number" in request.POST:
-#             phone_number = request.POST.get("phone_number")
-#             user = CustomUser.objects.get(phone_number=phone_number)
-#             login(request, user)
-#             return HttpResponseRedirect(reverse("dashboard"))
-#     return render(request, "login_signup.html")
 
 
 def welcome_view(request):
@@ -74,15 +61,14 @@ def verify_view(request):
             user.is_active = True
             user.save()
             login(request, user)
-            return HttpResponseRedirect(reverse("welcome_view"))
+            if request.session.get("is_new_user"):
+                del request.session["is_new_user"]
+                return HttpResponseRedirect(reverse("welcome_view"))
+            else:
+                return HttpResponseRedirect(reverse("home_page"))
         return render(
             request, "registration/verification.html", {"phone_number": phone_number}
         )
     except CustomUser.DoesNotExist:
-        messages.error(request, "Error accorded, try again.")
+        messages.error(request, "Error occurred, try again.")
         return HttpResponseRedirect(reverse("register_view"))
-
-
-# def verify_view(request):
-#     phone_number = request.session.get("user_mobile")
-#     return render(request, "verify.html", {"phone_number": phone_number})
