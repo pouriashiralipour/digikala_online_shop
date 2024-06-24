@@ -154,6 +154,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # AUTH MODEL
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+# redirect
+LOGOUT_REDIRECT_URL = "pages:home_page"
+LOGIN_REDIRECT_URL = "pages:home_page"
+
 # kavehnegar api
 KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")
 
