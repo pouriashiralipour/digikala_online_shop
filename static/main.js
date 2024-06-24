@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // فرم ثبت‌نام
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
         registerForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // جلوگیری از ارسال پیش‌فرض فرم
-
+            event.preventDefault();
+            
+            const button = event.target.querySelector('button[type="submit"]');
+            button.classList.add('loading');
+            
             const formData = new FormData(registerForm);
             const xhr = new XMLHttpRequest();
 
@@ -12,13 +14,17 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             xhr.onload = function() {
+                // Remove loading class after a delay matching your desired delay time
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                }, 2000); // 2000 milliseconds (2 seconds) delay (adjust as needed)
+
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        // اضافه کردن تأخیر قبل از هدایت به صفحه تأیید
                         setTimeout(() => {
                             window.location.href = response.redirect_url;
-                        }, 2000); // 2000 میلی‌ثانیه (2 ثانیه) تأخیر
+                        }, 2000); // 2 second delay before redirect (adjust as needed)
                     } else {
                         alert(response.message);
                     }
@@ -31,12 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // فرم تأیید
     const verifyForm = document.getElementById('verify-form');
     if (verifyForm) {
         verifyForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // جلوگیری از ارسال پیش‌فرض فرم
-
+            event.preventDefault();
+            
+            const button = event.target.querySelector('button[type="submit"]');
+            button.classList.add('loading');
+            
             const formData = new FormData(verifyForm);
             const xhr = new XMLHttpRequest();
 
@@ -44,6 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             xhr.onload = function() {
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                }, 1000);
+
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {

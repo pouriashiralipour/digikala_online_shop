@@ -69,7 +69,7 @@ def check_otp_time(phone_number):
         otp_datetime_created = user.otp_datetime_created
         diff_time = now - otp_datetime_created
         print("OTP_TIME : ", diff_time)
-        if diff_time.seconds > 30:
+        if diff_time.seconds > 120:
             return False
         return True
     except CustomUser.DoesNotExist:

@@ -1,53 +1,15 @@
-/* Write your code here */
-/*# sourceMappingURL=custom.css.map */
-/* استایل برای نوار پیشرفت نقطه‌ای */
-.dots-container {
-    display: none; /* به صورت پیش‌فرض مخفی */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Loading spinner styles */
+.btn .spinner-border {
+    display: none;
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
 }
 
-.dots-container div {
-    width: 8px;
-    height: 8px;
-    margin: 0 2px;
-    background-color: #4caf50;
-    border-radius: 50%;
-    opacity: 0;
-    animation: blink 1.4s infinite both;
+.btn.loading .spinner-border {
+    display: inline-block;
 }
 
-.dots-container div:nth-child(1) {
-    animation-delay: 0.2s;
-}
-.dots-container div:nth-child(2) {
-    animation-delay: 0.4s;
-}
-.dots-container div:nth-child(3) {
-    animation-delay: 0.6s;
-}
-
-@keyframes blink {
-    0%, 80%, 100% {
-        opacity: 0;
-    }
-    40% {
-        opacity: 1;
-    }
-}
-
-#login-button {
-    position: relative;
-    padding: 10px 20px;
-    margin-top: 20px;
-}
-
-#login-button span {
-    position: relative;
-    z-index: 2;
+.btn.loading span {
+    display: none;
 }
