@@ -1,1 +1,749 @@
-WELCOME
+{% extends '_base.html' %}
+{% load static %}
+{% block title %}
+    HomePage
+{% endblock %}
+
+{#{% block header %}#}
+{#    <div class="alert banner-container alert-dismissible fade show" role="alert">#}
+{#        <a href="#" class="banner-placement rounded-0"#}
+{#           style="background-image: url({% static "products/images/banner/017.jpg" %});height: 60px;">#}
+{#        </a>#}
+{#        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>#}
+{#    </div>#}
+{#{% endblock %}#}
+{% block user_option %}
+    <div class="user-options">
+        <div class="user-option user-option--account">
+            <a href="profile.html" class="user-option-btn user-option-btn--account">
+                <i class="ri-user-fill icon"></i>
+                <i class="ri-arrow-down-s-fill icon fs-7 text-muted"></i>
+            </a>
+            {% if user.is_authenticated %}
+                <div class="user-option--dropdown">
+                    <div class="profile-user-info ui-box">
+                        <div class="profile-detail">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-avatar me-3"><img
+                                        src="{% static "products/images/avatar/default.png" %}"
+                                        alt="avatar">
+                                </div>
+                                <div class="profile-info">
+                                    <a href="#"
+                                       class="text-decoration-none text-dark fw-bold mb-2">{{ user.username }}
+                                    </a>
+                                    <div class="text-muted fs-7 fw-bold">{{ user.email }}</div>
+                                </div>
+                            </div>
+                            <div class="user-options">
+                                <ul>
+                                    <li>
+                                        <span class="label">کیف پول</span>
+                                        <span class="detail">
+                                                            <span class="d-block">۰ <span
+                                                                    class="currency fs-7 fw-bold">تومان</span></span>
+                                                            <a href="#"
+                                                               class="link border-bottom-0 text-info fs-7 fw-bold">افزایش
+                                                                موجودی <i class="ri-arrow-left-s-line"></i></a>
+                                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="label">باشگاه مشتریان</span>
+                                        <span class="detail">
+                                                            <span class="d-block">۰ <span
+                                                                    class="score text-muted fs-7">امتیاز</span></span>
+                                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <ul class="nav nav-items-with-icon flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href=""><i
+                                        class="nav-link-icon ri-file-list-3-line"></i>
+                                    سفارش
+                                    های من</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i
+                                        class="nav-link-icon ri-copper-coin-fill"></i>
+                                    باشگاه مشتریان</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href=""><i
+                                        class="nav-link-icon ri-logout-box-r-line"></i>
+                                    خروج</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <div class="user-option--dropdown user-option--dropdown-right">
+                    <div class="profile-user-info ui-box">
+                        <ul class="nav nav-items-with-icon flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'account_login' %}"><i
+                                        class="nav-link-icon ri-login-box-line"></i>
+                                    ورود
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'account_signup' %}"><i
+                                        class="nav-link-icon ri-registered-line"></i>
+                                    ثبت نام</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="user-option">
+            <a href="#" class="user-option-btn user-option-btn--account">
+                <i class="ri-heart-3-fill icon"></i>
+                <span class="counter">۲</span>
+            </a>
+        </div>
+        <div class="user-option user-option--cart">
+            <a href="" class="user-option-btn user-option-btn--cart">
+                <i class="ri-shopping-cart-2-fill icon"></i>
+                <span class="user-item-text">
+
+                                    </span>
+                {% if cart %}
+                	<span class="counter" id="num_of_items">{{ cart.num_of_items }}</span>
+                {% endif %}
+
+            </a>
+            <div class="mini-cart">
+                <div class="mini-cart-header">
+                    <span class="mini-cart-products-count fa-num">{{ cart.num_of_items }} کالا</span>
+                    <a href="" class="btn btn-link px-0">مشاهده سبد خرید <i
+                            class="ri-arrow-left-s-fill"></i></a>
+                </div>
+                <div class="mini-cart-products do-simplebar">
+                    {% for item in items %}
+                        <div class="mini-cart-product">
+                            <div class="mini-cart-product-thumbnail">
+                                <a href="{{ item.product.get_absolute_url }}"><img
+                                        src="{{ item.product.image.url }}"
+                                        alt=""></a>
+                            </div>
+                            <div class="mini-cart-product-detail">
+                                <div class="mini-cart-product-brand text-black-50"><span>{{ item.product.brand }}</span></div>
+                                <div class="mini-cart-product-title">
+                                    <a href="{{ item.product.get_absolute_url }}">{{ item.product.title }}
+                                    </a>
+                                </div>
+                                <div class="mini-cart-purchase-info">
+                                    <div class="mini-cart-product-meta">
+                                        <span class="fa-num">{{ item.quantity }} عدد</span>
+                                        <span class="color" style="background-color: #d4d4d4;"></span>
+                                    </div>
+                                    {% comment %} <div class="mini-cart-product-price fa-num">{{ item.product.price|intcomma:False }} {% endcomment %}
+                                        <span
+                                                class="currency">تومان</span></div>
+                                </div>
+                                <button class="mini-cart-product-remove"></button>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <div class="mini-cart-footer">
+                    <div class="mini-cart-total">
+                        <span class="mini-cart-total-label">مبلغ قابل پرداخت:</span>
+                        {% comment %} <span class="mini-cart-total-value fa-num">{{ cart.total_price|intcomma:False }} <span
+                                class="currency">تومان</span></span> {% endcomment %}
+                    </div>
+                    <a href="" class="btn btn-primary">ورود و ثبت سفارش</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <main class="page-content">
+        <div class="container">
+            <div class="row mb-3 d-sm-block d-none">
+                <div class="col-12">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#"><img src="{% static "products/images/banner/025.gif" %}" alt="banner"></a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-lg-8 mb-lg-0 mb-4">
+                    <!-- start of main-slider -->
+                    <div class="swiper main-swiper-slider">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide main-swiper-slide">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/slider/main/01.jpg" %});">
+                                    <img src="{% static "products/images/slider/main/01.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="swiper-slide main-swiper-slide">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/slider/main/02.jpg" %});>
+                                           <img src="{% static "products/images/slider/main/02.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="swiper-slide main-swiper-slide">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/slider/main/03.jpg" %})" ;>
+                                    <img src="{% static "products/images/slider/main/03.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <div class="swiper-slide main-swiper-slide">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/slider/main/04.jpg" %});">
+                                    <img src="{% static "products/images/slider/main/04.jpg" %}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- If we need pagination -->
+                        <div class="swiper-pagination"></div>
+
+                        <!-- If we need navigation buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                    <!-- end of main-slider -->
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-12 col-6 mb-lg-3">
+                            <!-- start of banner -->
+                            <div class="banner-img banner-side-main-slider bg-position-right">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/banner/026.jpg" %});height:220px;">
+                                    <img src="{% static "products/images/banner/026.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <!-- end of banner -->
+                        </div>
+                        <div class="col-lg-12 col-6">
+                            <!-- start of banner -->
+                            <div class="banner-img banner-side-main-slider bg-position-right">
+                                <a href="#"
+                                   style="background-image: url({% static "products/images/banner/027.jpg" %});height:220px;">
+                                    <img src="{% static "products/images/banner/027.jpg" %}" alt="">
+                                </a>
+                            </div>
+                            <!-- end of banner -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/018.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+                <div class="col-md-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/019.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+            </div>
+            <!-- start of box => specials-product-slider -->
+            <div class="ui-box ui-box-specials pb-3 mb-5" style="background-color: #f03426;">
+                <div class="container">
+                    <div class="ui-box-title text-white fw-bolder d-sm-none">قبل از اتمام جشنواره خرید کن!</div>
+                    <div class="ui-box-content">
+                        <div class="row">
+                            <div class="col-lg-3 d-lg-block d-none">
+                                <div class="specials-container">
+                                    <img src="{% static "products/images/theme/specials.png" %}" class="img-fluid"
+                                         alt="">
+                                    <a href="#" class="btn btn-sm btn-outline-light">مشاهده همه <i
+                                            class="ri-arrow-left-fill ms-2"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <!-- Slider main container -->
+                                <div class="swiper product-specials-swiper-slider mb-3 pb-5">
+                                    <!-- Additional required wrapper -->
+                                    <div class="swiper-wrapper">
+                                        <!-- Slides -->
+                                        <div class="swiper-slide d-lg-none d-sm-block d-none">
+                                            <div class="specials-container">
+                                                <img src="{% static "products/images/theme/specials.png" %}"
+                                                     class="img-fluid mb-0" alt="">
+                                                <a href="#" class="btn btn-sm btn-outline-light">مشاهده همه <i
+                                                        class="ri-arrow-left-fill ms-2"></i></a>
+                                            </div>
+                                        </div>
+                                        {% for product in amazing_product %}
+                                            <div class="swiper-slide">
+                                                <div class="product-card">
+                                                    <div class="product-thumbnail">
+                                                        <a href="{{ product.get_absolute_url }}">
+                                                            <img src="{{ product.image.url }}"
+                                                                 alt="product title">
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-card-body">
+                                                        <h2 class="product-title">
+                                                            <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                                                        </h2>
+                                                        <div class="product-variant">
+                                                            <span class="color"
+                                                                  style="background-color: #d4d4d4;"></span>
+                                                            <span class="color"
+                                                                  style="background-color: #e86841;"></span>
+                                                            <span class="color"
+                                                                  style="background-color: #b82c32;"></span>
+                                                            <span>+</span>
+                                                        </div>
+                                                        <div class="product-price fa-num">
+                                                            <div class="d-flex align-items-center">
+                                                                <del class="price-old">26,900,000</del>
+                                                                <span class="discount ms-2">%2</span>
+                                                            </div>
+                                                            <span class="price-now">26,249,000 <span
+                                                                    class="currency">تومان</span></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-card-footer">
+                                                        <div
+                                                                class="d-flex align-items-center justify-content-between border-top mt-2 py-2">
+                                                            <div class="product-actions">
+                                                                <ul>
+                                                                    <li><a href="#" data-bs-toggle="tooltip"
+                                                                           data-bs-placement="top" title=""
+                                                                           data-bs-original-title="افزودن به سبد خرید"
+                                                                           aria-label="افزودن به سبد خرید"><i
+                                                                            class="ri-shopping-cart-line"></i></a>
+                                                                    </li>
+                                                                    <li><a href="#" data-bs-toggle="tooltip"
+                                                                           data-bs-placement="top" title=""
+                                                                           data-bs-original-title="مشاهده سریع"
+                                                                           aria-label="مشاهده سریع"
+                                                                           data-remodal-target="quick-view-modal"><i
+                                                                            class="ri-search-line"></i></a>
+                                                                    </li>
+                                                                    <li><a href="#" data-bs-toggle="tooltip"
+                                                                           data-bs-placement="top" title=""
+                                                                           data-bs-original-title="افزودن به علاقمندی"
+                                                                           aria-label="افزودن به علاقمندی"><i
+                                                                            class="ri-heart-3-line"></i></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="product-rating fa-num">
+                                                                <i class="ri-star-fill star"></i>
+                                                                <strong>۴.۴</strong>
+                                                                <span>(۴۳۶)</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="countdown-timer fa-num" data-countdown="2023/01/01">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                    <!-- If we need pagination -->
+                                    <div class="swiper-pagination"></div>
+
+                                    <!-- If we need navigation buttons -->
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of box => specials-product-slider -->
+            <!-- start of box => categories-slider -->
+            <div class="ui-box mb-5">
+                <div class="ui-box-title">دسته بندی محصولات</div>
+                <div class="ui-box-content">
+                    <div class="categories-container">
+                        <!-- Slider main container -->
+                        <div class="swiper category-swiper-slider pb-5">
+                            <!-- Additional required wrapper -->
+                            <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                {% for cat in category %}
+                                    {% if cat.is_parent %}
+                                        <div class="swiper-slide">
+                                        <div class="category-item">
+                                            <a href="{{ cat.get_absolute_url }}">
+                                                <img src="{{ cat.image.url }}"
+                                                     class="category-img"
+                                                     alt="">
+                                                <span class="category-title">{{ cat.title }}</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                            <!-- If we need pagination -->
+                            <div class="swiper-pagination"></div>
+
+                            <!-- If we need navigation buttons -->
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of box => categories-slider -->
+            <div class="row mb-5">
+                <div class="col-md-3 col-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/020.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+                <div class="col-md-3 col-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/021.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+                <div class="col-md-3 col-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/022.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+                <div class="col-md-3 col-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/023.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+            </div>
+            <!-- start of box -->
+            <div class="ui-box mb-5">
+                <div class="ui-box-title">منتخب محصولات تخفیف و حراج</div>
+                <div class="ui-box-content">
+                    <!-- Slider main container -->
+                    <div class="swiper product-swiper-slider">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <!-- Slides -->
+                            {% for product in offer_products %}
+                                <div class="swiper-slide">
+                                <!-- start of product-card -->
+                                <div class="product-card">
+                                    <div class="product-thumbnail">
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <img src="{{ product.image.url }}"
+                                                 alt="product title">
+                                        </a>
+                                    </div>
+                                    <div class="product-card-body">
+                                        <h2 class="product-title">
+                                            <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                                        </h2>
+                                        <div class="product-variant">
+                                            {% for color in product.color_published.all %}
+                                                <span class="color" style="background-color: {{ color.color_code }};"></span>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="product-price fa-num">
+                                            <div class="d-flex align-items-center">
+                                                <del class="price-old">26,900,000</del>
+                                                <span class="discount ms-2">%2</span>
+                                            </div>
+                                            <span class="price-now">26,249,000 <span
+                                                    class="currency">تومان</span></span>
+                                        </div>
+                                    </div>
+                                    <div class="product-card-footer">
+                                        <div
+                                                class="d-flex align-items-center justify-content-between border-top mt-2 py-2">
+                                            <div class="product-actions">
+                                                <ul>
+                                                    <li><a href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           title="" data-bs-original-title="افزودن به سبد خرید"
+                                                           aria-label="افزودن به سبد خرید"><i
+                                                            class="ri-shopping-cart-line"></i></a></li>
+                                                    <li><a href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           title="" data-bs-original-title="مشاهده سریع"
+                                                           aria-label="مشاهده سریع"
+                                                           data-remodal-target="quick-view-modal"><i
+                                                            class="ri-search-line"></i></a>
+                                                    </li>
+                                                    <li><a href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           title="" data-bs-original-title="افزودن به علاقمندی"
+                                                           aria-label="افزودن به علاقمندی"><i
+                                                            class="ri-heart-3-line"></i></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="product-rating fa-num">
+                                                <i class="ri-star-fill star"></i>
+                                                <strong>۴.۴</strong>
+                                                <span>(۴۳۶)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end of product-card -->
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        <!-- If we need pagination -->
+                        <div class="swiper-pagination"></div>
+
+                        <!-- If we need navigation buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of box -->
+            <div class="row mb-5">
+                <div class="col-md-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/018.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+                <div class="col-md-6 mb-lg-0 mb-3">
+                    <!-- start of banner -->
+                    <div class="banner-img">
+                        <a href="#">
+                            <img src="{% static "products/images/banner/019.jpg" %}" alt="">
+                        </a>
+                    </div>
+                    <!-- end of banner -->
+                </div>
+            </div>
+        </div>
+        <!-- start of quick-view-modal -->
+        <div class="remodal remodal-lg" data-remodal-id="quick-view-modal"
+             data-remodal-options="hashTracking: false">
+            <div class="remodal-header">
+                <button data-remodal-action="close" class="remodal-close"></button>
+            </div>
+            <div class="remodal-content">
+                <div class="product-detail-container">
+                    <div class="row">
+                        <div class="col-md-5 mb-md-0 mb-4">
+                            <!-- start of product-gallery -->
+                            <div class="product-gallery">
+                                <div class="gallery-img-container">
+                                    <!-- Slider main container -->
+                                    <div class="swiper gallery-swiper-slider">
+                                        <!-- Additional required wrapper -->
+                                        <div class="swiper-wrapper">
+                                            <!-- Slides -->
+                                            <div class="swiper-slide">
+                                                <div class="gallery-img">
+                                                    <img src="{% static "products/images/gallery/01.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-img">
+                                                    <img src="{% static "products/images/gallery/02.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-img">
+                                                    <img src="{% static "products/images/gallery/03.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-img">
+                                                    <img src="{% static "products/images/gallery/04.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- If we need navigation buttons -->
+                                        <div class="swiper-button-prev"></div>
+                                        <div class="swiper-button-next"></div>
+                                    </div>
+                                    <!-- Slider main container -->
+                                    <div class="swiper gallery-thumbs-swiper-slider">
+                                        <!-- Additional required wrapper -->
+                                        <div class="swiper-wrapper">
+                                            <!-- Slides -->
+                                            <div class="swiper-slide">
+                                                <div class="gallery-thumb">
+                                                    <img src="{% static "products/images/gallery/01.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-thumb">
+                                                    <img src="{% static "products/images/gallery/02.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-thumb">
+                                                    <img src="{% static "products/images/gallery/03.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <div class="gallery-thumb">
+                                                    <img src="{% static "products/images/gallery/04.png" %}" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of product-gallery -->
+                        </div>
+                        <div class="col-md-7 mb-md-0 mb-4">
+                            <!-- start of breadcrumb -->
+                            <nav class="mb-2" aria-label="breadcrumb">
+                                <ol class="breadcrumb fs-7">
+                                    <li class="breadcrumb-item"><a href="#">اپل</a></li>
+                                    <li class="breadcrumb-item"><a href="#">گوشی موبایل اپل</a></li>
+                                </ol>
+                            </nav>
+                            <!-- end of breadcrumb -->
+                            <!-- start of product-detail -->
+                            <h2 class="product-title">گوشی موبایل اپل مدل iPhone 13 A2634 دو سیم کارت ظرفیت 128
+                                گیگابایت و رم 4 گیگابایت</h2>
+                            <div class="product-en mb-3">
+                                <span>Apple iPhone 13 A2634 Dual SIM 128GB And 4GB RAM Mobile Phone</span>
+                            </div>
+                            <div class="product-user-suggestion mb-2">
+                                <i class="ri-thumb-up-fill text-success me-1"></i>
+                                <span class="fs-7 me-2">۷۹٪ (۱۷۰ نفر) از خریداران، این کالا را پیشنهاد کرده
+                                        اند.</span>
+                                <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                      title="خریداران کالا با انتخاب یکی از گزینه‌های پیشنهاد یا عدم پیشنهاد، تجربه خرید خود را با کاربران به اشتراک می‌گذارند."><i
+                                        class="ri-information-line"></i></span>
+                            </div>
+                            <div class="product-user-meta fa-num mb-4">
+                                    <span class="product-users-rating">
+                                        <i class="ri-star-fill icon me-1"></i>
+                                        <span class="fw-bold me-1">4.4</span>
+                                        <span class="text-muted fs-7">(742)</span>
+                                    </span>
+                                <span class="divider"></span>
+                                <a href="#" class="link border-bottom-0 fs-7">۶۳۷ دیدگاه کاربران</a>
+                                <span class="divider"></span>
+                                <a href="#" class="link border-bottom-0 fs-7">۴۰۵ پرسش و پاسخ</a>
+                            </div>
+                            <div class="product-variants-container mb-3">
+                                <div class="product-variant-selected-container">
+                                    <span class="product-variant-selected-label">رنگ:</span>
+                                    <span class="product-variant-selected">آبی</span>
+                                </div>
+                                <div class="product-variants">
+                                    <div class="product-variant-item">
+                                        <div class="custom-radio-circle">
+                                            <input type="radio" class="custom-radio-circle-input"
+                                                   name="productColor" id="productColor01" checked>
+                                            <label for="productColor01" class="custom-radio-circle-label"
+                                                   data-variant-label="آبی">
+                                                    <span class="color" style="background-color: #2196f3;"
+                                                          data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                          title="آبی"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="product-variant-item">
+                                        <div class="custom-radio-circle">
+                                            <input type="radio" class="custom-radio-circle-input"
+                                                   name="productColor" id="productColor02">
+                                            <label for="productColor02" class="custom-radio-circle-label"
+                                                   data-variant-label="سفید">
+                                                    <span class="color" style="background-color: #fff;"
+                                                          data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                          title="سفید"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="product-variant-item">
+                                        <div class="custom-radio-circle">
+                                            <input type="radio" class="custom-radio-circle-input"
+                                                   name="productColor" id="productColor03">
+                                            <label for="productColor03" class="custom-radio-circle-label"
+                                                   data-variant-label="صورتی">
+                                                    <span class="color" style="background-color: #ff80ab;"
+                                                          data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                          title="صورتی"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="expandable-text mb-3" style="height: 95px;">
+                                <div class="expandable-text_text">
+                                    <div class="product-params">
+                                        <ul>
+                                            <li>
+                                                <span class="label">حافظه داخلی:</span>
+                                                <span class="title">128 گیگابایت</span>
+                                            </li>
+                                            <li>
+                                                <span class="label">مقدار RAM:</span>
+                                                <span class="title">چهار گیگابایت</span>
+                                            </li>
+                                            <li>
+                                                <span class="label">بازه‌ی اندازه صفحه نمایش:</span>
+                                                <span class="title">6.0 اینچ و بزرگتر</span>
+                                            </li>
+                                            <li>
+                                                <span class="label">شبکه های ارتباطی:</span>
+                                                <span class="title">2G، 3G، 4G، 5G</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="expandable-text-expand-btn">
+                                        <span class="show-more">
+                                            بیشتر بخوانید <i class="ri-arrow-down-s-line"></i>
+                                        </span>
+                                    <span class="show-less d-none">
+                                            بستن <i class="ri-arrow-up-s-line"></i>
+                                        </span>
+                                </div>
+                            </div>
+                            <!-- end of product-detail -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="remodal-footer">
+                <button data-remodal-action="cancel" class="btn btn-sm btn-outline-light px-3 me-2">بستن</button>
+                <a href="#" class="btn btn-sm btn-primary px-3">دیدن محصول</a>
+            </div>
+        </div>
+        <!-- end of quick-view-modal -->
+    </main>
+{% endblock %}
