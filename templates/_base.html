@@ -102,9 +102,16 @@
                                                 </div>
                                                 <div class="profile-info">
                                                     <a href="#"
-                                                       class="text-decoration-none text-dark fw-bold mb-2">{{ user.username }}
+                                                       class="text-decoration-none text-dark fw-bold mb-2">
+                                                       {% if user.username %}
+                                                       {{ user.username }}
+                                                       {% else %}
+                                                        {{ user.phone_number }}
+                                                       {% endif %}
                                                     </a>
-                                                    <div class="text-muted fs-7 fw-bold">{{ user.email }}</div>
+                                                    {% if user.email %}
+                                                        <div class="text-muted fs-7 fw-bold">{{ user.email }}</div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                             <div class="user-options">
