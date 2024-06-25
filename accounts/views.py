@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -90,3 +90,8 @@ def verify_view(request):
             return JsonResponse({"success": False, "message": message})
         messages.error(request, message)
         return HttpResponseRedirect(reverse("register_view"))
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("home_page")
