@@ -13,3 +13,13 @@
 .btn.loading span {
     display: none;
 }
+.error {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25em;
+}
+
+.error-message {
+    color: red;
+    margin-top: 0.5em;
+}

@@ -64,26 +64,26 @@ def verify_view(request):
             try:
                 otp = int(otp_input)
             except (ValueError, TypeError):
-                message = "Invalid OTP format. Please enter numbers only."
+                message = "لطفا کد تایید را وارد کنید."
                 if request.headers.get("x-requested-with") == "XMLHttpRequest":
                     return JsonResponse({"success": False, "message": message})
                 messages.error(request, message)
-                return HttpResponseRedirect(reverse("register_view"))
+                return HttpResponseRedirect(reverse("verify_view"))
 
             # بررسی زمان انقضای OTP
             if not check_otp_time(user.phone_number):
-                message = "OTP is expired, please try again."
+                message = "کد تایید منقضی شده است."
                 if request.headers.get("x-requested-with") == "XMLHttpRequest":
                     return JsonResponse({"success": False, "message": message})
                 messages.error(request, message)
-                return HttpResponseRedirect(reverse("register_view"))
+                return HttpResponseRedirect(reverse("verify_view"))
 
             if user.otp != otp:
-                message = "OTP is incorrect."
+                message = "کد تایید اشتباه است."
                 if request.headers.get("x-requested-with") == "XMLHttpRequest":
                     return JsonResponse({"success": False, "message": message})
                 messages.error(request, message)
-                return HttpResponseRedirect(reverse("register_view"))
+                return HttpResponseRedirect(reverse("verify_view"))
 
             user.is_active = True
             user.save()
@@ -100,7 +100,7 @@ def verify_view(request):
             request, "registration/verification.html", {"phone_number": phone_number}
         )
     except CustomUser.DoesNotExist:
-        message = "Error occurred, try again."
+        message = "خطایی رخ داد، لطفا مجددا تلاش کنید."
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse({"success": False, "message": message})
         messages.error(request, message)

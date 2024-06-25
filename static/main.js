@@ -4,7 +4,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         registerForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(function(errorDiv) {
+                errorDiv.textContent = '';
+            });
+
+            const phoneNumberInput = registerForm.querySelector('input[name="phone_number"]');
+            const phoneNumber = phoneNumberInput.value.trim();
+
+            if (phoneNumber.length > 11) {
+                const errorDiv = document.getElementById('phone_number_error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'شماره موبایل یا ایمیل نباید بیشتر از 11 کاراکتر باشد.';
+                }
+                return; // Prevent form submission
+            }
+
             const button = event.target.querySelector('button[type="submit"]');
             button.classList.add('loading');
             
@@ -17,11 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-
-                    // پاک کردن ارورهای قبلی
-                    document.querySelectorAll('.error').forEach(function(errorDiv) {
-                        errorDiv.textContent = '';
-                    });
 
                     if (response.success) {
                         setTimeout(() => {
@@ -58,17 +69,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.target.querySelector('button[type="submit"]');
             button.classList.add('loading');
 
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(function(errorDiv) {
+                errorDiv.textContent = '';
+            });
+
+            const otpInput = verifyForm.querySelector('input[name="otp"]');
+            const otp = otpInput.value.trim();
+
+            if (!otp) {
+                const errorDiv = document.getElementById('otp_error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'لطفا کد تایید را وارد کنید.';
+                }
+                button.classList.remove('loading');
+                return; // Prevent form submission
+            }
+
+            if (otp.length > 4) {
+                const errorDiv = document.getElementById('otp_error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'کد تایید نباید بیشتر از 4 کاراکتر باشد.';
+                }
+                button.classList.remove('loading');
+                return; // Prevent form submission
+            }
+
             const formData = new FormData(verifyForm);
             const xhr = new XMLHttpRequest();
 
             xhr.open('POST', verifyForm.action);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-            // Clear previous errors
-            const errorContainer = verifyForm.querySelector('.error-message');
-            if (errorContainer) {
-                errorContainer.remove();
-            }
 
             xhr.onload = function() {
                 button.classList.remove('loading');
@@ -78,16 +109,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.success) {
                         window.location.href = response.redirect_url;
                     } else {
-                        const errorMessage = document.createElement('div');
-                        errorMessage.classList.add('error-message');
-                        errorMessage.textContent = response.message;
-                        verifyForm.querySelector('.form-element-row').appendChild(errorMessage);
+                        const errorDiv = document.getElementById('otp_error');
+                        if (errorDiv) {
+                            if (response.message === 'کد تایید اشتباه است.') {
+                                errorDiv.textContent = 'کد تایید اشتباه است.';
+                            } else if (response.message === 'کد تایید منقضی شده است.') {
+                                errorDiv.textContent = 'کد تایید منقضی شده است.';
+                            } else {
+                                errorDiv.textContent = response.message;
+                            }
+                        }
                     }
                 } else {
-                    const errorMessage = document.createElement('div');
-                    errorMessage.classList.add('error-message');
-                    errorMessage.textContent = 'An error occurred. Please try again.';
-                    verifyForm.querySelector('.form-element-row').appendChild(errorMessage);
+                    const errorDiv = document.getElementById('otp_error');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'خطایی رخ داد. لطفا مجددا تلاش کنید.';
+                    }
                 }
             };
 
