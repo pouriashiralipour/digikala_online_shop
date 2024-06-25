@@ -24,10 +24,11 @@
                     <div class="fw-bold fs-5 mb-3">کد تایید را وارد کنید</div>
                     <p class="fw-normal ">کد تایید برای شماره {{ phone_number }} پیامک شد
                     </p>
-                    <form id="verify-form" action="{% url 'verify_view' %}" class="auth-form" method="post">
+                    <form id="verify-form" action="{% url 'verify_view' %}" class="auth-form" method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
                         <div class="form-element-row mb-4">
                             <input type="text" name="otp" class="form-control" required>
+                            <div id="otp_error" class="error" style="color:red;"></div>
                         </div>
                         <div class="verify-code-wrapper mt-3 mb-5">
                             <div class="d-flex align-items-center" dir="ltr">

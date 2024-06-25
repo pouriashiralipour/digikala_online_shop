@@ -15,7 +15,6 @@ def register_view(request):
         phone_number = request.POST.get("phone_number")
         try:
             user = CustomUser.objects.get(phone_number=phone_number)
-            # کاربر موجود است، ارسال OTP برای ورود
             otp = get_random_otp()
             user.otp = otp
             print(otp)
@@ -27,7 +26,6 @@ def register_view(request):
                 )
             return HttpResponseRedirect(reverse("verify_view"))
         except CustomUser.DoesNotExist:
-            # کاربر جدید است، ثبت نام و ارسال OTP
             form = RegisterForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
@@ -43,8 +41,13 @@ def register_view(request):
                         {"success": True, "redirect_url": reverse("verify_view")}
                     )
                 return HttpResponseRedirect(reverse("verify_view"))
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                return JsonResponse({"success": False, "message": "Invalid form data"})
+            else:
+                if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                    errors = {
+                        field: [str(error) for error in form.errors[field]]
+                        for field in form.errors
+                    }
+                    return JsonResponse({"success": False, "errors": errors})
     return render(request, "registration/login-register.html", {"form": form})
 
 
@@ -57,6 +60,16 @@ def verify_view(request):
         phone_number = request.session.get("user_number")
         user = CustomUser.objects.get(phone_number=phone_number)
         if request.method == "POST":
+            otp_input = request.POST.get("otp")
+            try:
+                otp = int(otp_input)
+            except (ValueError, TypeError):
+                message = "Invalid OTP format. Please enter numbers only."
+                if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                    return JsonResponse({"success": False, "message": message})
+                messages.error(request, message)
+                return HttpResponseRedirect(reverse("register_view"))
+
             # بررسی زمان انقضای OTP
             if not check_otp_time(user.phone_number):
                 message = "OTP is expired, please try again."
@@ -64,12 +77,14 @@ def verify_view(request):
                     return JsonResponse({"success": False, "message": message})
                 messages.error(request, message)
                 return HttpResponseRedirect(reverse("register_view"))
-            if user.otp != int(request.POST.get("otp")):
+
+            if user.otp != otp:
                 message = "OTP is incorrect."
                 if request.headers.get("x-requested-with") == "XMLHttpRequest":
                     return JsonResponse({"success": False, "message": message})
                 messages.error(request, message)
                 return HttpResponseRedirect(reverse("register_view"))
+
             user.is_active = True
             user.save()
             login(request, user)
