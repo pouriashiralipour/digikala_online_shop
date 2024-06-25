@@ -85,9 +85,148 @@
                             </div>
                         </div>
                     </div>
-                    {% block user_option %}
-
-                    {% endblock %}
+                    <div class="user-options">
+                        <div class="user-option user-option--account">
+                            <a href="profile.html" class="user-option-btn user-option-btn--account">
+                                <i class="ri-user-fill icon"></i>
+                                <i class="ri-arrow-down-s-fill icon fs-7 text-muted"></i>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <div class="user-option--dropdown">
+                                    <div class="profile-user-info ui-box">
+                                        <div class="profile-detail">
+                                            <div class="d-flex align-items-center">
+                                                <div class="profile-avatar me-3"><img
+                                                        src="{% static "products/images/avatar/default.png" %}"
+                                                        alt="avatar">
+                                                </div>
+                                                <div class="profile-info">
+                                                    <a href="#"
+                                                       class="text-decoration-none text-dark fw-bold mb-2">{{ user.username }}
+                                                    </a>
+                                                    <div class="text-muted fs-7 fw-bold">{{ user.email }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="user-options">
+                                                <ul>
+                                                    <li>
+                                                        <span class="label">کیف پول</span>
+                                                        <span class="detail">
+                                                                            <span class="d-block">۰ <span
+                                                                                    class="currency fs-7 fw-bold">تومان</span></span>
+                                                                            <a href="#"
+                                                                               class="link border-bottom-0 text-info fs-7 fw-bold">افزایش
+                                                                                موجودی <i class="ri-arrow-left-s-line"></i></a>
+                                                                        </span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="label">باشگاه مشتریان</span>
+                                                        <span class="detail">
+                                                                            <span class="d-block">۰ <span
+                                                                                    class="score text-muted fs-7">امتیاز</span></span>
+                                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <ul class="nav nav-items-with-icon flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href=""><i
+                                                        class="nav-link-icon ri-file-list-3-line"></i>
+                                                    سفارش
+                                                    های من</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#"><i
+                                                        class="nav-link-icon ri-copper-coin-fill"></i>
+                                                    باشگاه مشتریان</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url "logout" %}"><i
+                                                        class="nav-link-icon ri-logout-box-r-line"></i>
+                                                    خروج</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="user-option--dropdown user-option--dropdown-right">
+                                    <div class="profile-user-info ui-box">
+                                        <ul class="nav nav-items-with-icon flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url "register_view" %}"><i
+                                                        class="nav-link-icon ri-login-box-line"></i>
+                                                        ورود | ثبت نام
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="user-option">
+                            <a href="#" class="user-option-btn user-option-btn--account">
+                                <i class="ri-heart-3-fill icon"></i>
+                                <span class="counter">۲</span>
+                            </a>
+                        </div>
+                        <div class="user-option user-option--cart">
+                            <a href="" class="user-option-btn user-option-btn--cart">
+                                <i class="ri-shopping-cart-2-fill icon"></i>
+                                <span class="user-item-text">
+                
+                                                    </span>
+                                {% if cart %}
+                                    <span class="counter" id="num_of_items">{{ cart.num_of_items }}</span>
+                                {% endif %}
+                
+                            </a>
+                            <div class="mini-cart">
+                                <div class="mini-cart-header">
+                                    <span class="mini-cart-products-count fa-num">{{ cart.num_of_items }} کالا</span>
+                                    <a href="" class="btn btn-link px-0">مشاهده سبد خرید <i
+                                            class="ri-arrow-left-s-fill"></i></a>
+                                </div>
+                                <div class="mini-cart-products do-simplebar">
+                                    {% for item in items %}
+                                        <div class="mini-cart-product">
+                                            <div class="mini-cart-product-thumbnail">
+                                                <a href="{{ item.product.get_absolute_url }}"><img
+                                                        src="{{ item.product.image.url }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="mini-cart-product-detail">
+                                                <div class="mini-cart-product-brand text-black-50"><span>{{ item.product.brand }}</span></div>
+                                                <div class="mini-cart-product-title">
+                                                    <a href="{{ item.product.get_absolute_url }}">{{ item.product.title }}
+                                                    </a>
+                                                </div>
+                                                <div class="mini-cart-purchase-info">
+                                                    <div class="mini-cart-product-meta">
+                                                        <span class="fa-num">{{ item.quantity }} عدد</span>
+                                                        <span class="color" style="background-color: #d4d4d4;"></span>
+                                                    </div>
+                                                    {% comment %} <div class="mini-cart-product-price fa-num">{{ item.product.price|intcomma:False }} {% endcomment %}
+                                                        <span
+                                                                class="currency">تومان</span></div>
+                                                </div>
+                                                <button class="mini-cart-product-remove"></button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                
+                                </div>
+                                <div class="mini-cart-footer">
+                                    <div class="mini-cart-total">
+                                        <span class="mini-cart-total-label">مبلغ قابل پرداخت:</span>
+                                        {% comment %} <span class="mini-cart-total-value fa-num">{{ cart.total_price|intcomma:False }} <span
+                                                class="currency">تومان</span></span> {% endcomment %}
+                                    </div>
+                                    <a href="" class="btn btn-primary">ورود و ثبت سفارش</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
