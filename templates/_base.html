@@ -34,13 +34,6 @@
 
         <!-- end of page-header-top -->
         <!-- start of page-header-middle -->
-        {% if messages %}
-            <div class="container mt-3 mb-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
         <div class="page-header--middle">
             <div class="container">
                 <div class="d-flex align-items-center justify-content-between">

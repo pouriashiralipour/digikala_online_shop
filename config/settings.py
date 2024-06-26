@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
-from django.contrib.messages import constants as messages_constants
+from django.contrib.messages import constants as messages
 from environs import Env
 
 # for enviroments variables
@@ -166,9 +166,5 @@ KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")
 # LOGIN_REDIRECT_URL = "verify"
 # LOGOUT_REDIRECT_URL = "verify"
 
-# For django messages
-MESSAGE_TAGS = {
-    messages_constants.ERROR: "danger",
-    messages_constants.SUCCESS: "success",
-    messages_constants.WARNING: "warning",
-}
+# messages tags
+MESSAGE_TAGS = {messages.ERROR: "danger", messages.SUCCESS: "success"}
