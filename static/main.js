@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const phoneNumberInput = registerForm.querySelector('input[name="phone_number"]');
             const phoneNumber = phoneNumberInput.value.trim();
 
-            if (phoneNumber.length > 11) {
+            if (phoneNumber.length !== 11) {
                 const errorDiv = document.getElementById('phone_number_error');
                 if (errorDiv) {
-                    errorDiv.textContent = 'شماره موبایل یا ایمیل نباید بیشتر از 11 کاراکتر باشد.';
+                    errorDiv.textContent = 'شماره موبایل را به درستی وارد کنید';
                 }
                 return; // Prevent form submission
             }
