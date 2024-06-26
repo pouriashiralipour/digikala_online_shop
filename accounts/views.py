@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 from .forms import RegisterForm
 from .models import CustomUser
@@ -92,6 +94,7 @@ def verify_view(request):
                 del request.session["is_new_user"]
                 redirect_url = reverse("welcome_view")
             else:
+                messages.success(request, _("WelcomeBack"))
                 redirect_url = reverse("home_page")
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({"success": True, "redirect_url": redirect_url})
@@ -126,5 +129,6 @@ def resend_otp_view(request):
 
 
 def logout_view(request):
+    messages.success(request, _("Your'r logout"))
     logout(request)
     return redirect("home_page")

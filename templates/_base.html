@@ -34,6 +34,17 @@
 
         <!-- end of page-header-top -->
         <!-- start of page-header-middle -->
+        {% if messages %}
+            {% for message in messages %}
+                <div id="toast" class="toast {{ message.tags }}">
+                    <span class="toast-icon">✔</span>
+                    <span class="toast-message">
+                        <strong>{{ message.tags|title }}</strong> {{ message }}
+                    </span>
+                    <button class="toast-close" onclick="closeToast()">✖</button>
+                </div>
+            {% endfor %}
+    {% endif %}
         <div class="page-header--middle">
             <div class="container">
                 <div class="d-flex align-items-center justify-content-between">

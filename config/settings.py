@@ -167,4 +167,10 @@ KAVEHNEGAR_API = os.getenv("OTP_API_KEYS")
 # LOGOUT_REDIRECT_URL = "verify"
 
 # messages tags
-MESSAGE_TAGS = {messages.ERROR: "danger", messages.SUCCESS: "success"}
+MESSAGE_TAGS = {
+    messages.DEBUG: "debug",
+    messages.INFO: "info",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "error",
+}
