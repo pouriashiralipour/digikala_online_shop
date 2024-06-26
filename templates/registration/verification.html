@@ -18,7 +18,7 @@
                 <div class="auth-box ui-box">
                     <div class="d-flex justify-content-center mb-2">
                         <div class="logo-container">
-                            <a href="#" class="logo"><img src={% static "products/images/logo-dark.svg"%} width="100" alt=""></a>
+                            <a href="{% url "home_page" %}" class="logo"><img src={% static "products/images/logo-dark.svg"%} width="100" alt=""></a>
                         </div>
                     </div>
                     <div class="fw-bold fs-5 mb-3">کد تایید را وارد کنید</div>
@@ -29,6 +29,7 @@
                         <div class="form-element-row mb-4">
                             <input type="text" name="otp" class="form-control" required>
                             <div id="otp_error" class="error mt-3" style="color:red;"></div>
+                            <div id="resend_message" class="success mt-3" style="color:green;"></div>
                         </div>
                         <div class="verify-code-wrapper mt-3 mb-5">
                             <div class="d-flex align-items-center" dir="ltr">
@@ -36,7 +37,8 @@
                                 <span class="mx-2">|</span>
                                 <div id="timer--verify-code" data-minutes-left=2></div>
                             </div>
-                            <a href="#" class="send-again link">ارسال مجدد</a>
+                            <a href="{% url 'resend_otp' %}" id="resend-code-link" style="display: none;">ارسال مجدد کد</a>                 
+
                         </div>
                         <div class="form-element-row mb-3">
                             <button type="submit" class="btn btn-primary btn-loading"><span>پیوستن به خانواده ما</span>
@@ -48,6 +50,7 @@
                             <a href="{% url "register_view" %}" class="link mx-auto">ویرایش شماره موبایل <i class="ri-pencil-fill ms-1"></i></a>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </main>

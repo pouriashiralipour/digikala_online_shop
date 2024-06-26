@@ -107,6 +107,24 @@ def verify_view(request):
         return HttpResponseRedirect(reverse("register_view"))
 
 
+def resend_otp_view(request):
+    if request.method == "POST":
+        phone_number = request.session.get("user_number")
+        try:
+            user = CustomUser.objects.get(phone_number=phone_number)
+            otp = get_random_otp()
+            user.otp = otp
+            print(otp)
+            user.save()
+            send_otp(phone_number, otp)
+            return JsonResponse(
+                {"success": True, "message": "کد تایید مجدداً ارسال شد."}
+            )
+        except CustomUser.DoesNotExist:
+            return JsonResponse({"success": False, "message": "کاربر یافت نشد."})
+    return JsonResponse({"success": False, "message": "درخواست نامعتبر است."})
+
+
 def logout_view(request):
     logout(request)
     return redirect("home_page")
